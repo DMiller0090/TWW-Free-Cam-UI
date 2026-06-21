@@ -1,7 +1,7 @@
 # TWW Free Cam UI
 
 A Windows tool for scripting sequenced free-camera movements in **The Legend of Zelda: The Wind Waker** and **Twilight Princess** running under the [Dolphin](https://dolphin-emu.org/) emulator.
-
+<img width="1178" height="601" alt="image" src="https://github.com/user-attachments/assets/00b85385-6161-450a-8add-0b256edc731f" />
 You build a timeline of camera "shots" — each with a start/end camera position, a start/end focus point, a duration (in frames), and an interpolation curve. The tool attaches to a running Dolphin process and writes the camera and focus coordinates into game memory each frame, producing smooth, repeatable camera moves.
 
 ## Use with TAS playbacks
