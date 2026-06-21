@@ -1,0 +1,42 @@
+[
+  {
+    "StartCamX": -352.9553,
+    "StartCamY": 406.3049,
+    "StartCamZ": -1069.8744,
+    "StartFocusX": -304.12137,
+    "StartFocusY": 368.87753,
+    "StartFocusZ": -910.6374,
+    "EndCamX": -380.73846,
+    "EndCamY": 1294.6782,
+    "EndCamZ": -1182.6926,
+    "EndFocusX": -150,
+    "EndFocusY": 0,
+    "EndFocusZ": -450,
+    "Frames": 30,
+    "Speed": 30,
+    "InterpolationType": "Ease In",
+    "BezierParam1": 0,
+    "BezierParam2": 0,
+    "SelectedActor": null
+  },
+  {
+    "StartCamX": -380.73846,
+    "StartCamY": 1294.6782,
+    "StartCamZ": -1182.6926,
+    "StartFocusX": -150,
+    "StartFocusY": 0,
+    "StartFocusZ": -450,
+    "EndCamX": 0,
+    "EndCamY": 3409.7666,
+    "EndCamZ": -1,
+    "EndFocusX": 0,
+    "EndFocusY": 0,
+    "EndFocusZ": 0,
+    "Frames": 82,
+    "Speed": 30,
+    "InterpolationType": "Linear",
+    "BezierParam1": 0,
+    "BezierParam2": 0,
+    "SelectedActor": null
+  }
+]

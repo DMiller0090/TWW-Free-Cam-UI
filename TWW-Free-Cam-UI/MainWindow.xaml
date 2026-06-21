@@ -1,0 +1,348 @@
+﻿<Window x:Class="TWW_Free_Cam_UI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TWW_Free_Cam_UI"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="600" Width="1200">
+    <Window.Resources>
+        <ContextMenu x:Key="CoordinateContextMenu">
+            <MenuItem Header="Go to here..." Click="SetCameraToCoordinates_Click"/>
+            <MenuItem Header="Set to current coordinates" Click="SetToCurrentCoordinates_Click"/>
+        </ContextMenu>
+
+        <!-- This style forces the TextBox to use our custom context menu,
+       and handles right-clicks so that the default menu does not appear -->
+        <Style x:Key="CustomContextMenuTextBoxStyle" TargetType="TextBox">
+            <!-- Remove the default context menu -->
+            <Setter Property="ContextMenu" Value="{x:Null}"/>
+            <Setter Property="Margin" Value="2"/>
+            <Setter Property="Height" Value="24"/>
+            <EventSetter Event="PreviewMouseRightButtonDown" Handler="TextBox_PreviewMouseRightButtonDown"/>
+            <!-- Now explicitly set our custom context menu -->
+            <Setter Property="ContextMenu" Value="{StaticResource CoordinateContextMenu}"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <!-- Top controls -->
+            <RowDefinition Height="Auto"/>
+            <!-- Camera + directional controls -->
+            <RowDefinition Height="*"/>
+            <!-- Main area: scripting table + record/playback controls -->
+        </Grid.RowDefinitions>
+
+        <!-- TOP CONTROLS -->
+        <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="0,0,0,10">
+            <Button Name="btnConnect" Content="Connect" Width="80" Margin="5" Click="btnConnect_Click"/>
+            <Button Name="btnSave" Content="Save Script" Width="80" Margin="5" Click="btnSave_Click"/>
+            <Button Name="btnLoad" Content="Load Script" Width="80" Margin="5" Click="btnLoad_Click"/>
+
+            <CheckBox Name="chkDisableAutofocus" VerticalAlignment="Center" Content="Control Camera" Margin="10,5"/>
+            <CheckBox Name="chkDisableUI" VerticalAlignment="Center" Content="Disable UI in Game" Margin="10,5"/>
+
+            <StackPanel Orientation="Horizontal" Margin="10,0,0,0">
+                <TextBlock Text="Refresh (ms):" VerticalAlignment="Center" Margin="0,5,5,5"/>
+                <TextBox Name="txtRefreshRate" Width="60" Height="24" Margin="0,5,5,5" Text="25" LostFocus="txtRefreshRate_LostFocus"/>
+            </StackPanel>
+        </StackPanel>
+
+        <!-- CAMERA + DIRECTIONAL CONTROLS -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Combined Camera GroupBox -->
+            <GroupBox Header="Camera" Margin="5">
+                <StackPanel Margin="5">
+                    <!-- Camera Position -->
+                    <TextBlock Text="Position" FontWeight="Bold" Margin="0,0,0,5"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                        <TextBlock Text="X:" VerticalAlignment="Center" Margin="2"/>
+                        <TextBox x:Name="txtCameraPosX" Width="80" Height="24" Margin="2" 
+                     LostFocus="txtCameraPosX_LostFocus"/>
+                        <TextBlock Text="Y:" VerticalAlignment="Center" Margin="2"/>
+                        <TextBox x:Name="txtCameraPosY" Width="80" Height="24" Margin="2" 
+                     LostFocus="txtCameraPosY_LostFocus"/>
+                        <TextBlock Text="Z:" VerticalAlignment="Center" Margin="2"/>
+                        <TextBox x:Name="txtCameraPosZ" Width="80" Height="24" Margin="2" 
+                     LostFocus="txtCameraPosZ_LostFocus"/>
+                    </StackPanel>
+
+                    <!-- Camera Target -->
+                    <TextBlock Text="Target" FontWeight="Bold" Margin="0,0,0,5"/>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="X:" VerticalAlignment="Center" Margin="2"/>
+                        <TextBox x:Name="txtCameraTargetX" Width="80" Height="24" Margin="2" 
+                     LostFocus="txtCameraTargetX_LostFocus"/>
+                        <TextBlock Text="Y:" VerticalAlignment="Center" Margin="2"/>
+                        <TextBox x:Name="txtCameraTargetY" Width="80" Height="24" Margin="2" 
+                     LostFocus="txtCameraTargetY_LostFocus"/>
+                        <TextBlock Text="Z:" VerticalAlignment="Center" Margin="2"/>
+                        <TextBox x:Name="txtCameraTargetZ" Width="80" Height="24" Margin="2" 
+                     LostFocus="txtCameraTargetZ_LostFocus"/>
+                    </StackPanel>
+                </StackPanel>
+            </GroupBox>
+
+            <!-- Directional Controls -->
+            <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                <GroupBox Header="Directional Controls" Margin="5">
+                    <StackPanel Orientation="Vertical" Margin="5">
+                        <!-- 2x3 Grid for Up/Left/Right/Down -->
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Up button -->
+                            <Button Grid.Row="0" Grid.Column="1" x:Name="btnUp" Content="Up" Width="60" Margin="5" Click="btnUp_Click"/>
+                            <!-- Left button -->
+                            <Button Grid.Row="1" Grid.Column="0" x:Name="btnLeft" Content="Left" Width="60" Margin="5" Click="btnLeft_Click"/>
+                            <!-- Right button -->
+                            <Button Grid.Row="1" Grid.Column="2" x:Name="btnRight" Content="Right" Width="60" Margin="5" Click="btnRight_Click"/>
+                            <!-- Down button -->
+                            <Button Grid.Row="2" Grid.Column="1" x:Name="btnDown" Content="Down" Width="60" Margin="5" Click="btnDown_Click"/>
+                        </Grid>
+
+                        <!-- Forward/Backward and Nudge Speed -->
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
+                            <Button x:Name="btnForward" Content="Forward" Width="60" Margin="5" Click="btnForward_Click"/>
+                            <Button x:Name="btnBackward" Content="Backward" Width="60" Margin="5" Click="btnBackward_Click"/>
+                            <StackPanel Orientation="Horizontal" Margin="5,0,0,0">
+                                <TextBlock Text="Nudge:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                <TextBox x:Name="txtNudgeSpeed" Width="50" Height="24" Text="50.0" LostFocus="txtNudgeSpeed_LostFocus"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
+                </GroupBox>
+            </StackPanel>
+        </Grid>
+
+        <!-- MAIN CONTENT AREA: Scripting Table + Record/Playback Controls -->
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Scripting Table -->
+            <StackPanel Grid.Column="0">
+                <DataGrid Name="dgScript"
+          AutoGenerateColumns="False"
+          CanUserAddRows="False"
+          IsReadOnly="False"
+          SelectionMode="Single"
+          SelectionUnit="Cell"
+          ItemsSource="{Binding ScriptRows}"
+          Margin="0,0,0,5"
+          Height="300">
+                    <DataGrid.Resources>
+                        <!-- Single-click editing -->
+                        <Style TargetType="DataGridCell">
+                            <EventSetter Event="PreviewMouseLeftButtonDown" Handler="DataGridCell_PreviewMouseLeftButtonDown"/>
+                        </Style>
+                        <!-- Existing cell style if needed; not used on individual textboxes now -->
+                        <Style TargetType="DataGridCell" x:Key="CoordinateCellStyle">
+                            <Setter Property="ContextMenu" Value="{StaticResource CoordinateContextMenu}"/>
+                        </Style>
+                    </DataGrid.Resources>
+                    <DataGrid.Columns>
+                        <!-- Start Cam -->
+                        <DataGridTemplateColumn Header="Start Cam" CellStyle="{StaticResource CoordinateCellStyle}">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBox Text="{Binding StartCamX, UpdateSourceTrigger=PropertyChanged}" 
+                                 Width="60" 
+                                 Tag="StartCamX"
+                                 Style="{StaticResource CustomContextMenuTextBoxStyle}"/>
+                                        <TextBox Text="{Binding StartCamY, UpdateSourceTrigger=PropertyChanged}" 
+                                 Width="60" 
+                                 Tag="StartCamY"
+                                 Style="{StaticResource CustomContextMenuTextBoxStyle}"/>
+                                        <TextBox Text="{Binding StartCamZ, UpdateSourceTrigger=PropertyChanged}" 
+                                 Width="60" 
+                                 Tag="StartCamZ"
+                                 Style="{StaticResource CustomContextMenuTextBoxStyle}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <!-- Start Focus -->
+                        <DataGridTemplateColumn Header="Start Focus" CellStyle="{StaticResource CoordinateCellStyle}">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBox Text="{Binding StartFocusX, UpdateSourceTrigger=PropertyChanged}"  
+                                 Width="60" 
+                                 Tag="StartFocusX"
+                                 Style="{StaticResource CustomContextMenuTextBoxStyle}"/>
+                                        <TextBox Text="{Binding StartFocusY, UpdateSourceTrigger=PropertyChanged}" 
+                                 Width="60" 
+                                 Tag="StartFocusY"
+                                 Style="{StaticResource CustomContextMenuTextBoxStyle}"/>
+                                        <TextBox Text="{Binding StartFocusZ, UpdateSourceTrigger=PropertyChanged}" 
+                                 Width="60" 
+                                 Tag="StartFocusZ"
+                                 Style="{StaticResource CustomContextMenuTextBoxStyle}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <!-- End Cam -->
+                        <DataGridTemplateColumn Header="End Cam" CellStyle="{StaticResource CoordinateCellStyle}">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBox Text="{Binding EndCamX, UpdateSourceTrigger=PropertyChanged}" 
+                                 Width="60" 
+                                 Tag="EndCamX"
+                                 Style="{StaticResource CustomContextMenuTextBoxStyle}"/>
+                                        <TextBox Text="{Binding EndCamY, UpdateSourceTrigger=PropertyChanged}" 
+                                 Width="60" 
+                                 Tag="EndCamY"
+                                 Style="{StaticResource CustomContextMenuTextBoxStyle}"/>
+                                        <TextBox Text="{Binding EndCamZ, UpdateSourceTrigger=PropertyChanged}" 
+                                 Width="60" 
+                                 Tag="EndCamZ"
+                                 Style="{StaticResource CustomContextMenuTextBoxStyle}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <!-- End Focus -->
+                        <DataGridTemplateColumn Header="End Focus" CellStyle="{StaticResource CoordinateCellStyle}">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBox Text="{Binding EndFocusX, UpdateSourceTrigger=PropertyChanged}" 
+                                 Width="60" 
+                                 Tag="EndFocusX"
+                                 Style="{StaticResource CustomContextMenuTextBoxStyle}"/>
+                                        <TextBox Text="{Binding EndFocusY, UpdateSourceTrigger=PropertyChanged}" 
+                                 Width="60" 
+                                 Tag="EndFocusY"
+                                 Style="{StaticResource CustomContextMenuTextBoxStyle}"/>
+                                        <TextBox Text="{Binding EndFocusZ, UpdateSourceTrigger=PropertyChanged}" 
+                                 Width="60" 
+                                 Tag="EndFocusZ"
+                                 Style="{StaticResource CustomContextMenuTextBoxStyle}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <!-- Frames Column -->
+                        <DataGridTextColumn Header="Frames" 
+                    Binding="{Binding Frames, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" 
+                    Width="50"/>
+
+                        <!-- Speed Column -->
+                        <DataGridTextColumn Header="Speed" 
+                    Binding="{Binding Speed, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" 
+                    Width="50"/>
+
+                        <!-- Interp Column -->
+                        <DataGridComboBoxColumn Header="Interp" 
+                        SelectedItemBinding="{Binding InterpolationType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=Linear}" 
+                        Width="70">
+                            <DataGridComboBoxColumn.EditingElementStyle>
+                                <Style TargetType="ComboBox">
+                                    <Setter Property="IsEditable" Value="False"/>
+                                </Style>
+                            </DataGridComboBoxColumn.EditingElementStyle>
+                            <DataGridComboBoxColumn.ItemsSource>
+                                <x:Array Type="{x:Type sys:String}" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+                                    <sys:String>Linear</sys:String>
+                                    <sys:String>Ease In</sys:String>
+                                    <sys:String>Ease Out</sys:String>
+                                    <sys:String>Ease In/Out</sys:String>
+                                    <sys:String>Cubic Bezier</sys:String>
+                                </x:Array>
+                            </DataGridComboBoxColumn.ItemsSource>
+                        </DataGridComboBoxColumn>
+
+                        <!-- Bezier Parameters Column -->
+                        <DataGridTemplateColumn Header="Bezier">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBox Text="{Binding BezierParam1, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" 
+                 Width="40" Height="24" Margin="2"/>
+                                        <TextBox Text="{Binding BezierParam2, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" 
+                 Width="40" Height="24" Margin="2"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <!-- Actor -->
+                        <DataGridComboBoxColumn Header="Actor" 
+                                SelectedItemBinding="{Binding SelectedActor}" 
+                                Width="60">
+                            <!-- TODO: Bind ItemsSource to your list of actors -->
+                        </DataGridComboBoxColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+
+
+                <!-- Row Buttons -->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,10">
+                    <Button Name="btnAddRow" Content="Add Row" Width="80" Margin="5" Click="btnAddRow_Click"/>
+                    <Button Name="btnRemoveRow" Content="Remove Row" Width="80" Margin="5" Click="btnRemoveRow_Click"/>
+                </StackPanel>
+            </StackPanel>
+
+            <!-- Record & Playback Controls -->
+            <StackPanel Grid.Column="1" Orientation="Vertical" Margin="10,0,0,0">
+                <!-- RECORD CONTROLS -->
+                <GroupBox Header="Record Controls" Margin="0,0,0,10">
+                    <StackPanel Orientation="Vertical" Margin="5">
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                            <Button x:Name="btnRecordStart" Content="Record Start" Width="90" Margin="5" Click="btnRecordStart_Click"/>
+                            <Button x:Name="btnRecordStop" Content="Record Stop" Width="90" Margin="5" Click="btnRecordStop_Click"/>
+                        </StackPanel>
+                        <Button x:Name="btnClearRecord" Content="Clear Data" Width="100" Margin="5" Click="btnClearRecord_Click"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,5">
+                            <TextBlock Text="Start:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                            <TextBox x:Name="txtRecordStartFrame" Width="60" Height="24" IsReadOnly="True"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,5">
+                            <TextBlock Text="End:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                            <TextBox x:Name="txtRecordEndFrame" Width="60" Height="24" IsReadOnly="True"/>
+                        </StackPanel>
+                    </StackPanel>
+                </GroupBox>
+
+                <!-- PLAYBACK CONTROLS -->
+                <GroupBox Header="Playback" Margin="0,0,0,0">
+                    <StackPanel Orientation="Vertical" Margin="5">
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                            <TextBlock Text="Start Frame:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                            <TextBox Name="txtStartFrame" Width="60" Height="24" Margin="0"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                            <Button Name="btnPlay" Content="Play" Width="60" Margin="0" Click="btnPlay_Click"/>
+                            <TextBox x:Name="txtCurrentFrame" Width="60" Height="24" Margin="10,0,0,0"/>
+                        </StackPanel>
+                    </StackPanel>
+                </GroupBox>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

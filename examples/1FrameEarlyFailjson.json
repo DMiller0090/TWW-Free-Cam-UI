@@ -1,0 +1,22 @@
+[
+  {
+    "StartCamX": 1039.5188,
+    "StartCamY": 245.73778,
+    "StartCamZ": 45.718628,
+    "StartFocusX": 347.61118,
+    "StartFocusY": 111.7025,
+    "StartFocusZ": 8.601437,
+    "EndCamX": -1,
+    "EndCamY": 1972.3892,
+    "EndCamZ": 1.4915342,
+    "EndFocusX": -1,
+    "EndFocusY": 0,
+    "EndFocusZ": 0,
+    "Frames": 35,
+    "Speed": 57.61207604602353,
+    "InterpolationType": "Cubic Bezier",
+    "BezierParam1": 0.2,
+    "BezierParam2": 0.8,
+    "SelectedActor": null
+  }
+]
